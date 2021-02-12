@@ -8,7 +8,8 @@
       v-bind:class="[
         {'existing_task__priority--high': task.priority == 1},
         {'existing_task__priority--medium': task.priority == 2},
-        {'existing_task__priority--low': task.priority == 3}]"
+        {'existing_task__priority--low': task.priority == 3}
+      ]"
       v-on:click="task.isAddjusted = true"
     > {{ PRIORITIES[task.priority] }} </p>
 
@@ -42,16 +43,17 @@
       <button class="button button--done"
         v-on:click="task.isDone = !task.isDone"
         v-bind:disabled="task.isAddjusted"
-        ></button>
+      ></button>
       <button class="button button--delete" :id="task.id" v-on:click="$emit('deleteItem', task.id)"></button>
       <button class="button button--expand"
         v-bind:class="{'button--shrink': task.isAddjusted}"
         v-on:click="task.isAddjusted = !task.isAddjusted; $emit('closeAll')"></button>
     </div>
+
     <input class="existing_task__description"
-    v-if="task.isAddjusted"
-    v-bind:value="task.description"
-    v-on:input="task.description = $event.target.value"
+      v-if="task.isAddjusted"
+      v-bind:value="task.description"
+      v-on:input="task.description = $event.target.value"
     >
   </li>
 </template>
@@ -71,10 +73,6 @@
         newValue: null
       }
     },
-
-    methods: {
-
-    }
   }
 </script>
 
@@ -249,4 +247,4 @@
     border: 2px solid indianred;
   }
 
-</style>>
+</style>

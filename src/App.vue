@@ -94,15 +94,9 @@ import singleTask from "./taskListItem.vue";
     },
 
     computed: {
-
       getLength() {
         return this.tasks.length;
       },
-
-      getStringLength(string) {
-        return string.length;
-      }
-
     },
 
     data() {
