@@ -38,23 +38,27 @@
         v-if="task.isAddjusted"
         v-bind:value="task.name"
         v-on:input="task.name = $event.target.value"
-        >
+      >
 
       <button class="button button--done"
         v-on:click="task.isDone = !task.isDone"
         v-bind:disabled="task.isAddjusted"
-      ></button>
-      <button class="button button--delete" :id="task.id" v-on:click="$emit('deleteItem', task.id)"></button>
+      >
+      </button>
+
+      <button class="button button--delete" :id="task.id" v-on:click="$emit('deleteItem', task.id)">
+      </button>
       <button class="button button--expand"
         v-bind:class="{'button--shrink': task.isAddjusted}"
-        v-on:click="task.isAddjusted = !task.isAddjusted; $emit('closeAll')"></button>
+        v-on:click="task.isAddjusted = !task.isAddjusted; $emit('closeAll')">
+      </button>
     </div>
 
-    <input class="existing_task__description"
+    <textarea class="existing_task__description"
       v-if="task.isAddjusted"
       v-bind:value="task.description"
       v-on:input="task.description = $event.target.value"
-    >
+    ></textarea>
   </li>
 </template>
 
@@ -72,7 +76,7 @@
         },
         newValue: null
       }
-    },
+    }
   }
 </script>
 
@@ -107,6 +111,8 @@
   }
 
   .existing_task__name--adjusted {
+    border: 1px solid gray;
+    background-color: white;
     margin-top: 12px;
     padding-top: 0;
     min-height: 40px;
@@ -125,7 +131,8 @@
     padding-bottom: 10px;
     padding-left: 10px;
     vertical-align: middle;
-    width: 330px;
+    width: 327px;
+    min-height: 50px;
     border: grey solid 1px;
     border-radius: 5px;
     margin-top: 0;
