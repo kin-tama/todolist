@@ -1,6 +1,18 @@
 <template>
-  <div>
     <main class="main">
+      <svg style="display: none">
+
+        <symbol viewBox="0 0 16 16" id="funnel">
+          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2zm1 .5v1.308l4.372 4.858A.5.5 0 0 1 7 8.5v5.306l2-.666V8.5a.5.5 0 0 1 .128-.334L13.5 3.308V2h-11z"/>
+        </symbol>
+
+        <symbol viewBox="0 0 16 16" id="funnel-fill">
+          <path d="M1.5 1.5A.5.5 0 0 1 2 1h12a.5.5 0 0 1 .5.5v2a.5.5 0 0 1-.128.334L10 8.692V13.5a.5.5 0 0 1-.342.474l-3 1A.5.5 0 0 1 6 14.5V8.692L1.628 3.834A.5.5 0 0 1 1.5 3.5v-2z"/>
+        </symbol>
+
+      </svg>
+
+
       <form class="task" action="#" method="post">
         <input class="task__description task__name" type="text" placeholder="Insert your task name" maxlength="30" required
           v-bind:value="newTaskName"
@@ -30,13 +42,26 @@
         <section class="buttons">
             <button class="buttons__button button button--sort" title="Sort from high priority to low" v-on:click.prevent="sortTaskList()" > Sort </button>
             <button class="buttons__button button button--add" title="Click to add your new task" v-on:click.prevent="addNewTask()"> Add </button>
+            <button class="buttons__button button button--filter" title="Click to filter tasks"
+              v-on:click.prevent="filterCount++"
+              v-bind:class="[
+                {'button--filterAll': filterType === 'all'},
+                {'button--filterUndone': filterType === 'undone'},
+                {'button--filterDone': filterType === 'done'}
+              ]"
+            >
+              <svg width="16" height="16">
+                <use v-if="filterType === 'all'" xlink:href="#funnel"></use>
+                <use v-if="filterType !== 'all'" xlink:href="#funnel-fill"></use>
+              </svg>
+            </button>
         </section>
 
       </form>
 
       <ul v-show="getLength" class="existing_tasks">
         <singleTask
-          v-for="task of tasks" :key="task"
+          v-for="task of getTasks" :key="task"
           v-bind:task="task"
           v-on:deleteItem="deleteTask(task.id)"
           />
@@ -47,7 +72,6 @@
       </p>
 
     </main>
-  </div>
 </template>
 
 <script>
@@ -90,22 +114,55 @@ import singleTask from "./taskListItem.vue";
 
       deleteTask(element) {
         this.tasks = this.tasks.filter((task) => Number(task.id) !== element)
-      }
+      },
     },
 
     computed: {
+
       getLength() {
         return this.tasks.length;
       },
+
+      getTasks() {
+      if (this.filterCount > 3) {
+        this.filterCount = 1;
+      }
+
+      switch (this.filterCount) {
+          case 1:
+            this.filterType = "all";
+            break;
+
+          case 2:
+            this.filterType = "undone";
+            break;
+
+          case 3:
+            this.filterType = "done";
+            break;
+        }
+
+      switch (this.filterType) {
+          case "done":
+            return this.tasks.filter((task) => {return task.isDone});
+          case "undone":
+            return this.tasks.filter((task) => {return !task.isDone});
+          case "all":
+            return this.tasks.filter(() => {return true});
+        }
+      }
     },
 
     data() {
       return {
+        filterCount: 1,
+        filterType: "all",
         newTaskName:"",
         newTaskDescription: "",
         newTaskPriority: 3,
 
         prevTasksList: [],
+        filteredTasksList: [],
 
         tasks: [
           {
@@ -229,7 +286,7 @@ import singleTask from "./taskListItem.vue";
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    width: 330px;
+    width: 360px;
   }
 
   .button {
@@ -238,7 +295,7 @@ import singleTask from "./taskListItem.vue";
     border-style: solid;
     border-color: rgb(122, 81, 81);
     border-width: 1px;
-    width: 240px;
+    width: 260px;
     height: 25px;
     margin-bottom: 20px;
     border-radius: 5px;
@@ -257,6 +314,42 @@ import singleTask from "./taskListItem.vue";
   .button--add:active {
     background-color: rgba(0, 0, 0, 0.6);
     color: ivory;
+  }
+
+  .button--filter {
+    width: 22px;
+    height: 22px;
+    padding: 0;
+    padding-top: 3px;
+    outline: none;
+    border: none;
+    border-radius: 50%;
+    background-color: white;
+    fill: grey;
+  }
+
+  .button--filter:hover {
+    fill: black;
+  }
+
+  .button--filterAll {
+    fill: gray;
+  }
+
+  .button--filterUndone {
+    fill: hotpink;
+  }
+
+  .button--filterUndone:hover {
+    fill: red;
+  }
+
+  .button--filterDone {
+    fill: lightseagreen;
+  }
+
+  .button--filterDone:hover {
+    fill: green;
   }
 
   .button--sort {
